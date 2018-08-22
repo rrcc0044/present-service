@@ -34,7 +34,7 @@ def clock_in(request):
 
     # check if user has an existing clockin that has no clockout
     if len(user.attendance.filter(clock_out=None)) > 0:
-        return Response("may existing clockin ka pa man")
+        return Response("You still have an existing clock-in")
     
     data = {
         'clock_in': now,
@@ -69,7 +69,7 @@ def clock_out(request):
     attendance = user.attendance.filter(clock_out=None)
 
     if not attendance:
-        return Response("wala kang existing na clockin")
+        return Response("Please clock-in first.")
 
     attendance[0].clock_out = now
     attendance[0].save()
