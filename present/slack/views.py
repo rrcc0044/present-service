@@ -106,8 +106,8 @@ def elapsed(request):
 
 def convert_timedelta(duration):
     seconds = duration.total_seconds()
-    hours = seconds // 3600
-    minutes = (seconds % 3600) // 60
-    seconds = seconds % 60
+    hours = int(seconds) // 3600
+    minutes = int(seconds % 3600) // 60
+    seconds = int(seconds % 60)
 
     return hours, minutes, seconds
