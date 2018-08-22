@@ -24,7 +24,7 @@ class Common(Configuration):
 
         # Your apps
         'present.users',
-
+        'present.slack',
     )
 
     # https://docs.djangoproject.com/en/2.0/topics/http/middleware/
@@ -192,7 +192,6 @@ class Common(Configuration):
             'rest_framework.renderers.BrowsableAPIRenderer',
         ),
         'DEFAULT_PERMISSION_CLASSES': [
-            'rest_framework.permissions.IsAuthenticated',
         ],
         'DEFAULT_AUTHENTICATION_CLASSES': (
             'rest_framework.authentication.SessionAuthentication',

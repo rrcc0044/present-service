@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
+from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.utils.encoding import python_2_unicode_compatible
 from django.db.models.signals import post_save
@@ -11,10 +12,22 @@ from rest_framework.authtoken.models import Token
 @python_2_unicode_compatible
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    global_id = models.CharField(max_length=25)
 
     def __str__(self):
         return self.username
 
+
+class Attendance(models.Model):
+    user = models.ForeignKey('users.User', related_name='attendance', on_delete=models.CASCADE)
+    clock_in = models.DateTimeField(auto_now_add=True)
+    clock_out = models.DateTimeField(auto_now_add=False, null=True, blank=True)
+
+    @property
+    def elapsed(self):
+        if self.clock_out:
+            return self.clock_out - self.clock_in
+        return timezone.now() - self.clock_in
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
