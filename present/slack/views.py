@@ -74,12 +74,14 @@ def clock_out(request):
     attendance[0].clock_out = now
     attendance[0].save()
 
+    hours, minutes, seconds = convert_timedelta(attendance[0].elapsed)
+
     response = {
         "response_type": "ephemeral",
         "text": "You have clocked-out for today. See you soon!",
         "attachments": [
             {
-                "text": f"Elapsed Time: {str(attendance[0].elapsed)}"
+                "text": f"Total Time: {hours} hours {minutes} minutes {seconds} seconds"
             }
         ]
     }
@@ -90,6 +92,22 @@ def clock_out(request):
 @api_view(['POST'])
 def elapsed(request):
     user = User.objects.get(global_id=request.data.get('user_id'))
-    attendance = user.attendance.all()
+    attendance = user.attendance.order_by('-id')
 
-    return Response(f"{attendance[0].elapsed}")
+    hours, minutes, seconds = convert_timedelta(attendance[0].elapsed)
+
+    response = {
+        "response_type": "ephemeral",
+        "text": f"Elapsed Time: {hours} hours {minutes} minutes {seconds} seconds",
+    }
+
+    return Response(response)
+
+
+def convert_timedelta(duration):
+    seconds = duration.total_seconds()
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
+    seconds = seconds % 60
+
+    return hours, minutes, seconds
