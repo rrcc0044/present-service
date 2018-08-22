@@ -43,7 +43,20 @@ def clock_in(request):
 
     user.attendance.create(**data)
 
-    return Response("Have a great day")
+    response = {
+        "response_type": "ephemeral",
+        "text": "You have clocked-in for today.",
+        "attachments": [
+            {
+                "text": "to clock-out type `/clock-out`"
+            },
+            {
+                "text": "to check elapsed time type `/elapsed`"
+            }
+        ]
+    }
+
+    return Response(response)
 
 
 @api_view(['POST'])
@@ -61,7 +74,17 @@ def clock_out(request):
     attendance[0].clock_out = now
     attendance[0].save()
 
-    return Response(f"Elapsed Time: {str(attendance[0].elapsed)}")
+    response = {
+        "response_type": "ephemeral",
+        "text": "You have clocked-out for today. See you soon!",
+        "attachments": [
+            {
+                "text": f"Elapsed Time: {str(attendance[0].elapsed)}"
+            }
+        ]
+    }
+
+    return Response(response)
 
 
 @api_view(['POST'])
