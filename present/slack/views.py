@@ -44,7 +44,7 @@ def clock_in(request):
     user.attendance.create(**data)
 
     response = {
-        "response_type": "ephemeral",
+        "response_type": "in_channel",
         "text": "You have clocked-in for today.",
         "attachments": [
             {
@@ -77,7 +77,7 @@ def clock_out(request):
     hours, minutes, seconds = convert_timedelta(attendance[0].elapsed)
 
     response = {
-        "response_type": "ephemeral",
+        "response_type": "in_channel",
         "text": "You have clocked-out for today. See you soon!",
         "attachments": [
             {
@@ -97,7 +97,7 @@ def elapsed(request):
     hours, minutes, seconds = convert_timedelta(attendance[0].elapsed)
 
     response = {
-        "response_type": "ephemeral",
+        "response_type": "in_channel",
         "text": f"Elapsed Time: {hours} hours {minutes} minutes {seconds} seconds",
     }
 
