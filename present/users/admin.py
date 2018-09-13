@@ -1,5 +1,6 @@
 import csv
 from io import StringIO
+from datetime import timedelta
 
 from django.http import HttpResponse
 from django.contrib import admin
@@ -29,12 +30,14 @@ class UserAdmin(UserAdmin):
             if attendances:
                 for attendance in attendances:
                     hours, minutes, seconds = convert_timedelta(attendance.elapsed)
+                    clock_in = attendance.clock_in + timedelta(hours=8)
+                    clock_out = attendance.clock_out + timedelta(hours=8)
                     writer.writerow([
-                        s.username, attendance.clock_in, attendance.clock_out,
+                        s.username, clock_in, clock_out,
                         f"{hours} hours {minutes} minutes {seconds} seconds"
                     ])
 
         f.seek(0)
         response = HttpResponse(f, content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=stat-info.csv'
+        response['Content-Disposition'] = 'attachment; filename=attendance.csv'
         return response
