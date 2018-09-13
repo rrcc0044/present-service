@@ -29,13 +29,14 @@ class UserAdmin(UserAdmin):
             attendances = s.attendance.order_by('-id')
             if attendances:
                 for attendance in attendances:
-                    hours, minutes, seconds = convert_timedelta(attendance.elapsed)
-                    clock_in = attendance.clock_in + timedelta(hours=8)
-                    clock_out = attendance.clock_out + timedelta(hours=8)
-                    writer.writerow([
-                        s.username, clock_in, clock_out,
-                        f"{hours} hours {minutes} minutes {seconds} seconds"
-                    ])
+                    if attendance.clock_in and attendance.clock_out:
+                        hours, minutes, seconds = convert_timedelta(attendance.elapsed)
+                        clock_in = attendance.clock_in + timedelta(hours=8)
+                        clock_out = attendance.clock_out + timedelta(hours=8)
+                        writer.writerow([
+                            s.username, clock_in, clock_out,
+                            f"{hours} hours {minutes} minutes {seconds} seconds"
+                        ])
 
         f.seek(0)
         response = HttpResponse(f, content_type='text/csv')
